@@ -1,0 +1,37 @@
+{% extends "public/templates/public_template.html" %}
+
+{% block title %}Analyze Images{% endblock %}
+
+{% block main %}
+<form id="form">
+    <h2>苗字</h2>
+    <input type="text" id="firstname">
+    <h2>名前</h2>
+    <input type="text" id="lastname">
+    <button type="submit" name="button">送信</button>
+</form>
+  <div id="output"></div>
+
+{% endblock %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+      $('#form').on('submit',function(event){
+        $.ajax({
+          data : {
+            firstname : $('#firstname').val(),
+            lastname : $('#lastname').val(),
+          },
+          type : 'POST',
+          url : '/test'
+        })
+　　　　　④formの下に結果を表示
+        .done(function(data){
+          $('#output').text(data.output).show();
+        });
+        event.preventDefault();
+      });
+    });
+  </script>
+{% block script %}
+{% endblock %}

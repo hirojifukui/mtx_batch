@@ -1,0 +1,316 @@
+{% extends "public/templates/public_template.html" %}
+{% block style %}
+<style type="text/css">
+    body {
+      background-color: linen;
+      margin:0;
+    }
+    
+    h1 {
+      color: maroon;
+      margin-left: 40px;
+    }
+    .top_margine {
+        margin: 50px, 0px, 0px, 0px;
+    }
+    .main_image {
+        width: 960px;
+        height: 720px;
+    }
+    .a1 {
+        position: absolute;
+        top:198px;
+        left:133px;
+    }
+    .box_g {
+        background-color: green;
+        opacity: 0.5;
+        width: 76px;
+        height: 48px;
+    }
+</style>
+{% endblock %}
+{% block title %}Uploaded files{% endblock %}
+
+{% block main %}
+<div class ="content-section" id = "content" style="padding: 10px; margin-top: 56px;">
+    <div id = top_margine>
+        <div id = "area">
+			<legend class = "border-bottom mb-4" id="inside"> Uploaded Files</legend>
+                <div class = "form-group">                   
+					<ul id = "ul">
+                        {% for item in files %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                    <button class = "btn btn-primary" onclick="submit_confirm();">Confirm</button>
+                    <!-- <input type="button" value='Confirm' onclick="analyze()"> 
+                    <script src="/static/js/ajax_1.js"></script>-->
+                </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    var txt = "";
+    var v_margin = 60;
+    var h, h2, cell_height, cell_width, cell_rows, cell_cols, cells, eval_data;
+    h = h2 = cell_height = cell_width = cell_rows = cell_cols = 0; m=0;
+
+    document.getElementById('main').innerHTML = "<main></main>";
+
+    function submit_confirm() {
+
+        var res = {"action": "JSON"};
+        console.log(`submit confirmation`);
+        fetch(`${window.origin}/api`, {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify(res),
+            cache: "no-cache",
+            headers: new Headers({
+                "content-type": "application/json"
+            })
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+                console.log(`Response status was not 200: ${response.status}`);
+                return;
+            }
+            response.json().then(function(data) {
+                console.log("Received data[evali]: ", data["eval"]);
+                eval_data = data["eval"];
+                document.getElementById('content').style = "padding: 0px; margin-top: 56px";
+                rendering(data);
+            })
+        })
+    }
+
+    function rendering(data) {
+        //console.log(data)
+        // print(data.path)
+        // document.getElementById('area').innerHTML = '<img src=' + String(data.path) + '>'
+        // + '<div id ="loop"></div>'
+        var bc = "";
+        cell_height = parseInt(data.eval.eval[0]["row_h"]);
+        cell_width = parseInt(data.eval.eval[0]["col_w"]);
+        cell_rows = data.eval.eval[0]["row"];
+        cell_cols = data.eval.eval[0]["col"];
+        cells = data.eval.eval[0]["eval_cells"];
+        txt = '<img src=' + String(data.path) + '>';
+        data.eval.eval.forEach(element => {
+            cells.forEach(cellFunction);
+
+            arrows(data.total_files, data.number_of_file);
+            document.getElementById('area').innerHTML = txt;
+            number_of_mistakes();
+        })
+        return;
+    }
+
+    function cellFunction(value, index, array){
+        h = v_margin + parseInt(value.upper_y);
+        h2 = v_margin + parseInt(value.upper_y) + 20;
+        //console.log("row ",parseInt(value.row), "col",parseInt(value.col));
+        //console.log("eval_data.eval ", eval_data.eval, "eval_data.eval[0] ",eval_data.eval[0]);
+        cell_id = parseInt(value.row)*9+parseInt(value.col);
+        if (String(eval_data["reviewed"]) == "false"){
+            if (String(value.match) == "true"){
+                bc = "green";
+                eval_data.eval[0].eval_cells[cell_id]["color"]="green";
+                eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
+            } else {
+                bc = "pink";
+                eval_data.eval[0].eval_cells[cell_id]["color"]="pink";
+            }   
+            // if (parseFloat(value.prob_ans) < 0.5){
+            //     bc = "yellow";
+            //     eval_data.eval[0].eval_cells[cell_id]["color"]="yellow";
+            //    eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
+            // }
+            if (parseInt(value.conf_level)==1){
+                bc = "#44AA00";
+                eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
+                eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
+            }
+            if (parseInt(value.conf_level)==2){
+                bc = "#88CC00";
+                eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
+                eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
+            }
+            if (parseInt(value.conf_level)==3){
+                bc = "#AAEE00";
+                eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
+                eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
+            }
+            if (parseInt(value.conf_level)==4){
+                bc = "#E6E600";
+                eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
+                eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
+            }
+            if (parseInt(value.conf_level)==5){
+                bc = "#FFAA00";
+                eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
+                eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
+            }
+        } else {
+            if (String(eval_data.eval[0].eval_cells[cell_id]["correct"]) == "true") {
+                bc = "green";
+                eval_data.eval[0].eval_cells[cell_id]["color"]="green";
+            } else {
+                bc = "pink";
+                eval_data.eval[0].eval_cells[cell_id]["color"]="pink";
+            }
+        }
+        
+        txt = txt + "<div id = \""+ String(value.row) + String(value.col) + "\" style=\"position: absolute; top: " 
+        + String(h) + "px; " + "left: " + value.upper_x + "px; " + "background-color: " + bc + "; opacity: 0.3; width: "
+        + cell_width + "px; height: " + cell_height + "px; z-index: 50;\"></div>" + 
+        "<div style=\"position: absolute; top: " + String(h) + "px; " + "left: " + value.upper_x + "px; width: "
+        + cell_width + "px; height: " + cell_height 
+        + "px; vertical-align: bottom; text-align: right; color: blue; z-index: 98; \" onclick=\"cell_click('" +
+        String(value.row) + String(value.col) + "')\">" 
+        //+ value.predict + "</div>" + 
+        + "</div>" + 
+        "<div style=\"position: absolute; top: " + String(h) + "px; " + "left: " + value.upper_x + 
+        "px; text-align: left; color: red; z-index: 100; \">" + value.answer + "</div>";
+    }
+
+    function cell_click(id){
+        // console.log(id);
+        r = Math.floor(parseInt(id)/10);
+        c = parseInt(id)%10;
+        if (document.getElementById(id).style.backgroundColor == "pink"){
+            document.getElementById(id).style.backgroundColor="green";
+            eval_data.eval[0].eval_cells[r*9+c]["color"]="green";
+            eval_data.eval[0].eval_cells[r*9+c]["correct"]=true;
+            // cells[r*9+c]["miss_recog"] = false;
+        }else if (document.getElementById(id).style.backgroundColor == "green"){
+            document.getElementById(id).style.backgroundColor="red";
+            eval_data.eval[0].eval_cells[r*9+c]["color"]="red";
+            eval_data.eval[0].eval_cells[r*9+c]["correct"]=false;
+            // cells[r*9+c]["miss_recog"] = true;
+        }else if (document.getElementById(id).style.backgroundColor == "yellow"){
+            document.getElementById(id).style.backgroundColor="red";
+            eval_data.eval[0].eval_cells[r*9+c]["correct"]=false;
+            eval_data.eval[0].eval_cells[r*9+c]["color"]="red";
+        }else if (document.getElementById(id).style.backgroundColor == "red"){
+            document.getElementById(id).style.backgroundColor="green";
+            eval_data.eval[0].eval_cells[r*9+c]["color"]="green";
+            eval_data.eval[0].eval_cells[r*9+c]["correct"]=true;
+        }else{
+            document.getElementById(id).style.backgroundColor="red";
+            eval_data.eval[0].eval_cells[r*9+c]["color"]="red";
+            eval_data.eval[0].eval_cells[r*9+c]["correct"]=false;
+        }
+        number_of_mistakes();
+    }
+
+    function number_of_mistakes(){
+        m = 0;
+        // console.log("number of mistakes", m, "Cells ",eval_data.eval[0].eval_cells );
+        for (i in eval_data.eval[0].eval_cells){
+            if (eval_data.eval[0].eval_cells[i]["color"]=="pink" || eval_data.eval[0].eval_cells[i]["color"]=="red"){
+                m += 1;
+                // console.log("number of mistakes", m, "Cell color ",eval_data.eval[0].eval_cells[i]["color"] );
+            }
+        };
+        txt2 = "<div id = \"m\" >Number of Mistakes: " + String(m) + "</div>";
+        document.getElementById("mistake").innerHTML = txt2;
+    }
+
+    //    document.getElementById('target').addEventListener('click',function(){
+    //要素の取得 → 背景色を変える
+    //document.getElementById('target').style.background='pink';
+    //});
+    function arrows(total, this_file){
+        var action = "End"
+        // Display "End of Review"
+        txt = txt + "<div id = \"stop_eval\" style=\"position: absolute; top: 80px; left: 200px; "
+         + "background-color: #003399; opacity: 1; width: 160px; height: 30px; " 
+         + "border: 2px solid blue; border-radius: 3px; z-index: 60; \" onclick=\"button_click" 
+         + "('" + action + "')\"><div id = \"button_txt\" style=\"text-align: center; color: white; " 
+         + "opacity: 1; z-index: 70;\">End Review</div></div>"
+         // Display "Number of Mistakes"
+         txt = txt + "<div id = \"mis\" style=\"position: absolute; top: 80px; left: 500px; "
+         + "background-color: #003399; opacity: 1; width: 200px; height: 30px; " 
+         + "border: 2px solid blue; border-radius: 3px; z-index: 60; \">"
+         + "<div id = \"mistake\" style=\"text-align: center; color: white; " 
+         + "opacity: 1; z-index: 70;\">Number of Mistakes: " + "<div id = \"m\" >" + m + "</div></div></div>"
+        if (total > 1){
+            if(this_file == 0){
+                action = "+"
+                txt = txt + "<div id = \"right_arrow\" style=\"position: absolute; top: 450px; left: 880px; "
+                + "width: 30px; height: 46px; z-index: 94;\" onclick=\"button_click('" + action + "')\">" 
+                + "<img src= \"static/img/right_arrow.png\"></div>"
+            } else if(this_file == total - 1){
+                action = "-"
+                txt = txt + "<div id = \"left_arrow\" style=\"position: absolute; top: 450px; left: 10px; "
+                + "width: 30px; height: 46px; z-index: 93;\" onclick=\"button_click('" + action + "')\">" 
+                + "<img src= \"static/img/left_arrow.png\"></div>"
+            } else {
+                action = "+"
+                txt = txt + "<div id = \"right_arrow\" style=\"position: absolute; top: 450px; left: 880px; "
+                + "width: 30px; height: 46px; z-index: 94;\" onclick=\"button_click('" + action + "')\">" 
+                + "<img src= \"static/img/right_arrow.png\"></div>"
+                action = "-"
+                txt = txt + "<div id = \"left_arrow\" style=\"position: absolute; top: 450px; left: 10px; "
+                + "width: 30px; height: 46px; z-index: 93;\" onclick=\"button_click('" + action + "')\">"
+                + "<img src= \"static/img/left_arrow.png\"></div>"
+            }
+        } 
+    }
+
+    function rendering_endpage(data){
+        console.log("rendering endpage");
+        txt3 = "<div id =\"end_page\" style=\"position: absolute; top: 0px; margin-top: 56px; padding: 30px; \">"
+                + "<div id =\"mis\">Number of Mistakes<ul>";
+        for (i in data.eval){
+            txt3 = txt3 + "<li>" + data.eval[i]["image"] + ": " + data.eval[i]["mistakes"] + "</li>";
+        } 
+        action = "JSON"
+        txt3 = txt3 + "</ul></div><a href = \/home>Go to Home</a><br><div id = \"goback\" onclick=\"button_click('" + action + "')\">Return to Evaluation</div></div>";
+        document.getElementById('area').innerHTML = txt3;
+        return
+    }
+
+    function button_click(action){
+        // console.log("Cells: ",cells)
+        // eval_data.eval[0]["eval"] = cells;
+        eval_data["reviewed"]=true;
+        eval_data["mistakes"]=m;
+        var res = {"action": action, "data": eval_data};
+        //console.log("action", action, "data", eval_data);
+        fetch(`/api`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(res),
+        cache: "no-cache",
+        headers: new Headers({
+            "content-type": "application/json",
+            "accept": "application/json"
+            })
+        })
+        .then(function (response) {
+        if (response.status !== 200) {
+            console.log(`Response status was not 200: ${response.status}`);
+            return;
+        }
+        response.json().then(function(data) {
+            console.log("type", data["type"], "Data ", data);
+            if (data["type"] == "eval"){
+                eval_data = data["eval"];
+                rendering(data);
+            } else {
+                rendering_endpage(data);
+            }
+                      
+            })
+        })
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "public/templates/public_template.html" %}
+
+{% block title %}Upload Files{% endblock %}
+
+{% block main %}
+<div class ="content-section">
+	<form method ="POST" action ="testdate">
+		{{ form.hidden_tag() }}
+		<fieldset class="form-group">
+			<legend class = "border-bottom mb-4"> Test Date</legend>
+				<div class = "form-group">
+					{{ form.testdate.label}} 
+					{% if form.testdate.errors %}	
+						{{ form.testdate(id = "datepicker", class="form-control form-control-lg is-invalid") }}
+						<div class="invalid-feedback">
+							{% for error in form.testdate.errors %}
+								<span>{{ error }}</span>
+							{% endfor %}
+						</div>
+					{% else %}
+						{{ form.testdate(id = "datepicker", class="form-control form-control-lg") }}
+					{% endif %}
+				</div>
+        </fieldset>
+        {{ form.submit(class="btn btn-outline-info")}}
+        <!--<input type=submit value=Upload> -->
+    </form>
+</div>
+
+{% endblock %}
+
+{% block script %}
+ <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#datepicker" ).datepicker();
+  } );
+  </script>
+{% endblock %}

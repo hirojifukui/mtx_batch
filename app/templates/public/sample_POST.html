@@ -1,0 +1,30 @@
+{% extends "public/templates/public_template.html" %}
+{% import "public/macros/input_macros.html" as im %}
+
+{% block title %}Log in {% endblock %}
+
+{% block main %}
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>Sign up</h1>
+      <hr>
+      <form action="#" method="POST">
+
+  	{{ im.input(label="Username", id="username", name="username", placeholder="Enter your username") }}
+
+   	{{ im.input(label="Password", id="password", name="password", placeholder="Enter your password") }}
+
+	<button type="submit" class="btn btn-primary">Log-in</button>
+
+	{% if feedback %}
+	<p class="text-danger float-right">{{ feedback }}</p>
+	{% endif %}
+
+	</form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

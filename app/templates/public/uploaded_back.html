@@ -1,0 +1,177 @@
+{% extends "public/templates/public_template.html" %}
+{% block style %}
+<style type="text/css">
+    body {
+      background-color: linen;
+      margin:0;
+    }
+    
+    h1 {
+      color: maroon;
+      margin-left: 40px;
+    }
+    .top_margine {
+        margin: 50px, 0px, 0px, 0px;
+    }
+    .main_image {
+        width: 960px;
+        height: 720px;
+    }
+    .a1 {
+        position: absolute;
+        top:198px;
+        left:133px;
+    }
+    .box_g {
+        background-color: green;
+        opacity: 0.5;
+        width: 76px;
+        height: 48px;
+    }
+</style>
+{% endblock %}
+{% block title %}Uploaded files{% endblock %}
+
+{% block main %}
+<div class ="content-section" >
+    <div id = top_margine>
+        <div id = "area">
+			<legend class = "border-bottom mb-4" id="inside"> Uploaded Files</legend>
+                <div class = "form-group">                   
+					<ul>
+                        {% for item in files %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                    <button class = "btn btn-primary" onclick="submit_confirm();">Confirm</button>
+                    <!-- <input type="button" value='Confirm' onclick="analyze()"> 
+                    <script src="/static/js/ajax_1.js"></script>-->
+                </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script>
+    function submit_confirm() {
+
+        var res = {"action": "JSON"};
+
+        fetch(`${window.origin}/api`, {
+            method: "POST",
+            credentials: "include",
+            body: JSON.stringify(res),
+            cache: "no-cache",
+            headers: new Headers({
+                "content-type": "application/json"
+            })
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+                console.log(`Response status was not 200: ${response.status}`);
+                return;
+            }
+            response.json().then(function(data) {
+                console.log(data)
+                // print(data.path)
+
+                // document.getElementById('area').innerHTML = '<img src=' + String(data.path) + '>'
+                // + '<div id ="loop"></div>'
+                var v_margin = 60;
+                var h = 0;
+                var h2 = 0;
+                var bc = "";
+                var cell_height = parseInt(data.eval.eval[0]["row_h"]);
+                var cell_width = parseInt(data.eval.eval[0]["col_w"]);
+                var cell_rows = data.eval.eval[0]["row"];
+                var cell_cols = data.eval.eval[0]["col"];
+                var cells = data.eval.eval[0]["eval"];
+                var txt = '<img src=' + String(data.path) + '>';
+                data.eval.eval.forEach(element => {
+                    cells.forEach(cellFunction);
+                    document.getElementById('area').innerHTML = txt;
+                });
+
+                function cellFunction(value, index, array){
+                    h = v_margin + parseInt(value.upper_y);
+                    h2 = v_margin + parseInt(value.upper_y) + 20;
+                    if (String(value.match) == "true"){
+                        bc = "green";
+                    } else {
+                        bc = "red";
+                    }   
+                    if (parseFloat(value.conf_level) == 1){
+                        bc = "#22AA00";
+                    }
+                    if (parseFloat(value.conf_level) == 2){
+                        bc = "#44CC00";
+                    }
+                    if (parseFloat(value.conf_level) == 3){
+                        bc = "#66EE00";
+                    }
+                    if (parseFloat(value.conf_level) == 4){
+                        bc = "#88FF00";
+                    }
+                    if (parseFloat(value.conf_level) == 5){
+                        bc = "#FFAA00";
+                    }
+                    if (parseFloat(value.conf_level) == -1){
+                        bc = "red";
+                    }
+                    if (parseFloat(value.conf_level) == -2){
+                        bc = "#800080";
+                    }
+                    txt = txt + "<div id = \""+ String(value.row) + String(value.col) + "\" style=\"position: absolute; top: " 
+                    + String(h) + "px; " + "left: " + value.upper_x + "px; " + "background-color: " + bc + "; opacity: 0.3; width: "
+                    + cell_width + "px; height: " + cell_height + "px; z-index: 50;\"></div>" + 
+                    "<div style=\"position: absolute; top: " + String(h) + "px; " + "left: " + value.upper_x + "px; width: "
+                    + cell_width + "px; height: " + cell_height 
+                    + "px; vertical-align: bottom; text-align: right; color: blue; z-index: 98; \" onclick=\"cell_click('" +
+                    String(value.row) + String(value.col) + "')\">" 
+                    // + value.predict + "</div>" + 
+                    + "</div>" + 
+                    "<div style=\"position: absolute; top: " + String(h) + "px; " + "left: " + value.upper_x + 
+                    "px; text-align: left; color: red; z-index: 100; \">" + value.answer + "</div>";
+                    
+                    //txt = txt + "<div id = \""+ String(value.row) + String(value.col) + "\" style=\"color: red; position: absolute; top: " 
+                    //+ String(h) + "px; " + "left: " + value.upper_x + "px; " + "background-color: " + bc + "; opacity: 0.3; width: "
+                    //+ cell_width + "px; height: " + cell_height + "px; z-index: 50;\">" + value.answer + 
+                    //"<div style=\"text-align: right; color: blue; z-index: 100;\" onclick=\"cell_click(" + String(value.row) + String(value.col) 
+                    //+ ", value)\">" + value.predict + "</div></div>";                                  
+                    
+                    // "row: "+ value.row + ", col: " + value.col + ", x: " + value.upper_x + 
+                    // ", y: " + value.upper_y + ", answer: " + value.answer + ", predict: " + value.predict + 
+                    // ", prob: " + value.prob_ans +", match: " + value.match + "<br>";
+                }
+                
+                //document.getElementById('area').innerHTML = '<img src=' + String(data["path"]) + '>'
+                //+ '<p>'+ data["eval"]["eval"].length + '</p>'
+                //+ '<p>'+ data["eval"]["eval"][0]["col"] + '</p>'
+                //+ '<p>'+ data["eval"]["eval"][0]["row"] + '</p>'
+                //+ '<p>'+ data["eval"]["eval"][0]["eval"][0] + '</p>'
+                //+ '<p>'+ data["eval"]["eval"][0]["eval"][0]["answer"] + '</p>'
+                //+ '<p>'+ data["eval"]["eval"][0]["eval"][0]["match"] + '</p>'
+                //+ '<p>'+ data["eval"]["eval"][0]["eval"][0]["upper_x"] + '</p>'
+                //+ '<p>'+ data["eval"]["eval"][0]["eval"][0]["upper_y"] + '</p>'
+            })
+        })
+    };
+
+    function cell_click(id){
+        console.log(id);
+        if (document.getElementById(id).style.backgroundColor == "pink"){
+            document.getElementById(id).style.backgroundColor="green";
+        }else{
+            document.getElementById(id).style.backgroundColor="pink";
+        }
+    }
+    //    document.getElementById('target').addEventListener('click',function(){
+    //要素の取得 → 背景色を変える
+    //document.getElementById('target').style.background='pink';
+    //});
+
+</script>
+
+{% endblock %}
