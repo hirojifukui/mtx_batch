@@ -28,8 +28,8 @@ date = "2020-01-01"
 #model_t = load_model("cnn/models/tens_digit_20201013.h5")
 #model_oo = load_model("cnn/models/trained_20201014.h5")
 #model_o = load_model("cnn/models/ones_digit_20201013.h5")
-model = load_model("cnn/models/25x44_2digit_deep_2020604.h5")
-model_single = load_model("cnn/models/25x44_1digit_20201018.h5")
+model = load_model("cnn/lfs/25x44_2digit_deep_2020604.h5")
+model_single = load_model("cnn/lfs/25x44_1digit_20201018.h5")
 model_s = load_model("cnn/models/single_digit_25x25_32_64_20210114.h5")
 path = ""; secure_files = []; form_id =""
 
