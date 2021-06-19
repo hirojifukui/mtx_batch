@@ -8,8 +8,8 @@ from flask_mail import Mail
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'c18cace8ad8d65db47387215e829f17d'
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///site.db'
-db = SQLAlchemy(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
