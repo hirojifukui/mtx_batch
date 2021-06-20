@@ -699,7 +699,7 @@ def api():
     global secure_files, path, i
 
     req = request.get_json()  
-    #print("Request: ", req["action"], "secure_files: ", secure_files)
+    print("Request: ", req["action"], "secure_files in api(): ", secure_files)
     if req["action"] == "JSON":
         i = 0
         res = return_page (secure_files, i)
