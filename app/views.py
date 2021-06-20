@@ -656,6 +656,8 @@ def write_review_log (user, date, image, form_id, data):
     return
 
 def return_page (secure_files, i):
+    print("i in line 659: ", i)
+    print("secure_files: ", secure_files)
     evaluation = read_result(current_user.username, date, secure_files[i] )
     #print(evaluation)
     #path = os.path.join(parent_dir, "uploads", current_user.username, date)
