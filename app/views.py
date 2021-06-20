@@ -14,6 +14,7 @@ from pyzbar.pyzbar import decode
 import cv2 as cv
 import numpy as np
 import pymongo
+os.environ["CUDA_VISIBLE_DEVICES"]="-1" 
 from keras.models import model_from_json
 from keras.preprocessing import image
 import json
