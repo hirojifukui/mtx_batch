@@ -30,7 +30,7 @@ date = "2020-01-01"
 #model_o = load_model("cnn/models/ones_digit_20201013.h5")
 model = load_model("cnn/lfs/25x44_2digit_deep_2020604.h5")
 model_single = load_model("cnn/lfs/25x44_1digit_20201018.h5")
-#model_s = load_model("cnn/models/single_digit_25x25_32_64_20210114.h5")
+model_s = load_model("cnn/models/single_digit_25x25_32_64_20210114.h5")
 path = ""; secure_files = []; form_id =""
 
 @app.route("/")
@@ -362,7 +362,7 @@ def eval_logic(img, answer):
                 eex = img[:,i:i+25]
                 #print(i, eex.shape)
                 ex = np.expand_dims(eex, axis=0)
-                s_proba = model_single.predict(ex)
+                s_proba = model_s.predict(ex)
                 s_result = s_proba.tolist()
                 ind = int(np.argmax(s_result,axis=-1))
                 sum_cells += ind
