@@ -8,7 +8,7 @@
 		{{ form.hidden_tag() }}
 		<fieldset class="form-group">
 			<legend class = "border-bottom mb-4"> Test Date</legend>
-				<div class = "form-group">
+				<div class = "form-group mb-4 w-25">
 					{{ form.testdate.label}} 
 					{% if form.testdate.errors %}	
 						{{ form.testdate(id = "datepicker", class="form-control form-control-lg is-invalid") }}
@@ -30,11 +30,11 @@
 {% endblock %}
 
 {% block script %}
- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script>
-  $( function() {
-    $( "#datepicker" ).datepicker();
-  } );
-  </script>
+  //$( function() {
+  //  $( "#datepicker" ).datepicker();
+  //} );
+  </script> -->
 {% endblock %}

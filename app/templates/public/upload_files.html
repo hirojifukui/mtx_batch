@@ -26,15 +26,25 @@
 					{% endif %}
 				</div>
         </fieldset>
+		<div id="btn">
 		{{ form.submit(class="btn btn-outline-info")}}
 		<!-- {% if finish %}	
 			{{ form.submit_f(class="btn btn-outline-info")}}
 		{% endif %}
         <input type=submit value=Upload> -->
+		</div>
     </form>
 </div>
 
 {% endblock %}
 
 {% block script %}
+<script>
+	function check_value() {
+		document.getElementById('btn').innerHTML = "<main style=\"text-align: center;\">\
+			<span class=\"text-warning\" style=\"margin-top: 20px; font-size: 1.3rem\">Scoring takes time. Please wait.</span>\
+			<img src=\"/static/img/progress.gif\" width=\"150\" ></main>";
+		return true;
+	}
+</script>
 {% endblock %}

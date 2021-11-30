@@ -64,7 +64,7 @@ class ResetPasswordForm(FlaskForm):
     submit = SubmitField('Reset Password')
 	
 class TestDateForm(FlaskForm):
-    testdate = DateField('Test Date:', format='%m/%d/%Y', validators=[DataRequired()])
+    testdate = DateField('Test Date:', format='%Y-%m-%d', validators=[DataRequired()])
     submit = SubmitField('Set Test Date')
 	
 class UploadForm(FlaskForm):

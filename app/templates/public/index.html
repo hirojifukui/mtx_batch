@@ -1,27 +1,56 @@
 {% extends "public/templates/public_template.html" %}
 
+{% block style %}
+<style type="text/css">
+	.content-left {
+		border-right: 1px solid #EEEEEE;
+	}
+	.toppad {
+		padding-top: 20px;
+	}
+</style>
+{% endblock %}
+
 {% block title %}Home{% endblock %}
 
 {% block main %}
 
 <div class="container">
-  <div class="row">
+  <div class="row toppad">
     <div class="col">
-      <h1>Home</h1>
-        {% if current_user.is_authenticated %}
-          <h4>1st Step: <a href="{{ url_for ('testdate') }}">Set Test Date</a></h4>
-          <h4>2nd Step: <a href="{{ url_for ('upload_files') }}">Upload Scanned Worksheets</a></h4>
-          <h4>3rd Step: Analyze Worksheets</h4>
-          <h4>4th Step: Check the Worksheets</h4>
-        {% else %}
-          Please login to the system
-          <a href="{{ url_for ('login') }}">Login</a> </br>
-          If you do not have our account, please register
-          <a class="nav-item nav-link" href="{{ url_for ('register') }}">Register</a>
-        {% endif %}
+		<div class="content-left">
+		<h2>Batch Scoring</h2>
+		<h4>For class teachers</h4>
+		<p>Score all worksheets at once!</p>
+			{% if current_user.is_authenticated %}
+				<ol>
+					<li><a href="{{ url_for ('testdate') }}">Set Test Date</a></li>
+					<li>Upload Scanned Worksheets</li>
+					<li>Check the scoring results</li>
+				</ol>
+				<img src="/static/img/web/scanner.png" width=80% class="img-fluid" alt="scanner photo">
+			{% else %}
+			<h4>Please 
+			<a href="{{ url_for ('login') }}">login</a> </h4></br>
+			<h4>If you do not have a account,</h4> 
+			<h4>please <a href="{{ url_for ('register') }}">register</a></h4>
+			{% endif %}
+		</div>
     </div>
+	<div class="col">
+		<h2>Scan & Score</h2>
+		<h4>For families and small groups</h4>
+		<p>Campture & score worksheet by worksheet. </p>
+		<ol>
+			<li>Capture a worksheet image</li>
+			<li>Score the worksheet</li>
+			<li>Check the scoring result</li>
+		</ol>
+		<img src = "/static/img/web/phone.jpg" width = 80% class = "img-fluid" alt="smartphone photo">
+	</div>
   </div>
 </div>
+
 
 {% endblock %}
 

@@ -2,7 +2,7 @@
 {% block style %}
 <style type="text/css">
     body {
-      background-color: linen;
+      background-color: whitesmoke;
       margin:0;
     }
     
@@ -28,6 +28,9 @@
         width: 76px;
         height: 48px;
     }
+	 .blue {
+        color: blue;
+    }
 </style>
 {% endblock %}
 {% block title %}Uploaded files{% endblock %}
@@ -36,7 +39,7 @@
 <div class ="content-section" id = "content" style="padding: 10px; margin-top: 56px;">
     <div id = top_margine>
         <div id = "area">
-			<legend class = "border-bottom mb-4" id="inside"> Uploaded Files</legend>
+			<!-- <legend class = "border-bottom mb-4" id="inside"> Uploaded Files</legend>
                 <div class = "form-group">                   
 					<ul id = "ul">
                         {% for item in files %}
@@ -44,9 +47,7 @@
                         {% endfor %}
                     </ul>
                     <button class = "btn btn-primary" onclick="submit_confirm();">Confirm</button>
-                    <!-- <input type="button" value='Confirm' onclick="analyze()"> 
-                    <script src="/static/js/ajax_1.js"></script>-->
-                </div>
+                </div> -->
         </div>
     </div>
 </div>
@@ -62,8 +63,8 @@
 
     document.getElementById('main').innerHTML = "<main></main>";
 
-    function submit_confirm() {
-
+    //function submit_confirm() {
+		window.onload = function () {
         var res = {"action": "JSON"};
         console.log(`submit confirmation`);
         fetch(`${window.origin}/api`, {
@@ -126,44 +127,41 @@
                 bc = "pink";
                 eval_data.eval[0].eval_cells[cell_id]["color"]="pink";
             }   
-            // if (parseFloat(value.prob_ans) < 0.5){
-            //     bc = "yellow";
-            //     eval_data.eval[0].eval_cells[cell_id]["color"]="yellow";
-            //    eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
+            
+            // if (parseInt(value.conf_level)==1){
+            //     bc = "#44AA00";
+            //     eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
+            //     eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
             // }
-            if (parseInt(value.conf_level)==1){
-                bc = "#44AA00";
-                eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
-                eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
-            }
-            if (parseInt(value.conf_level)==2){
-                bc = "#88CC00";
-                eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
-                eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
-            }
-            if (parseInt(value.conf_level)==3){
-                bc = "#AAEE00";
-                eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
-                eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
-            }
-            if (parseInt(value.conf_level)==4){
-                bc = "#E6E600";
-                eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
-                eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
-            }
-            if (parseInt(value.conf_level)==5){
-                bc = "#FFAA00";
-                eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
-                eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
-            }
+            // if (parseInt(value.conf_level)==2){
+            //     bc = "#88CC00";
+            //     eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
+            //     eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
+            // }
+            // if (parseInt(value.conf_level)==3){
+            //     bc = "#AAEE00";
+            //     eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
+            //     eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
+            // }
+            // if (parseInt(value.conf_level)==4){
+            //     bc = "#E6E600";
+            //     eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
+            //     eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
+            // }
+            // if (parseInt(value.conf_level)==5){
+            //     bc = "#FFAA00";
+            //     eval_data.eval[0].eval_cells[cell_id]["color"]=bc;
+            //     eval_data.eval[0].eval_cells[cell_id]["correct"]=true;
+            // }
         } else {
-            if (String(eval_data.eval[0].eval_cells[cell_id]["correct"]) == "true") {
-                bc = "green";
-                eval_data.eval[0].eval_cells[cell_id]["color"]="green";
-            } else {
-                bc = "pink";
-                eval_data.eval[0].eval_cells[cell_id]["color"]="pink";
-            }
+		    bc = eval_data.eval[0].eval_cells[cell_id]["color"]
+            // if (String(eval_data.eval[0].eval_cells[cell_id]["correct"]) == "true") {
+            //     bc = "green";
+            //     eval_data.eval[0].eval_cells[cell_id]["color"]="green";
+            // } else {
+            //     bc = "pink";
+            //     eval_data.eval[0].eval_cells[cell_id]["color"]="pink";
+            // }
         }
         
         txt = txt + "<div id = \""+ String(value.row) + String(value.col) + "\" style=\"position: absolute; top: " 
@@ -179,32 +177,43 @@
         "px; text-align: left; color: red; z-index: 100; \">" + value.answer + "</div>";
     }
 
-    function cell_click(id){
-        // console.log(id);
-        r = Math.floor(parseInt(id)/10);
-        c = parseInt(id)%10;
-        if (document.getElementById(id).style.backgroundColor == "pink"){
-            document.getElementById(id).style.backgroundColor="green";
-            eval_data.eval[0].eval_cells[r*9+c]["color"]="green";
-            eval_data.eval[0].eval_cells[r*9+c]["correct"]=true;
-            // cells[r*9+c]["miss_recog"] = false;
-        }else if (document.getElementById(id).style.backgroundColor == "green"){
-            document.getElementById(id).style.backgroundColor="red";
-            eval_data.eval[0].eval_cells[r*9+c]["color"]="red";
-            eval_data.eval[0].eval_cells[r*9+c]["correct"]=false;
-            // cells[r*9+c]["miss_recog"] = true;
-        }else if (document.getElementById(id).style.backgroundColor == "yellow"){
-            document.getElementById(id).style.backgroundColor="red";
-            eval_data.eval[0].eval_cells[r*9+c]["correct"]=false;
-            eval_data.eval[0].eval_cells[r*9+c]["color"]="red";
-        }else if (document.getElementById(id).style.backgroundColor == "red"){
-            document.getElementById(id).style.backgroundColor="green";
-            eval_data.eval[0].eval_cells[r*9+c]["color"]="green";
-            eval_data.eval[0].eval_cells[r*9+c]["correct"]=true;
-        }else{
-            document.getElementById(id).style.backgroundColor="red";
-            eval_data.eval[0].eval_cells[r*9+c]["color"]="red";
-            eval_data.eval[0].eval_cells[r*9+c]["correct"]=false;
+	function flip_miss_recog(r, c) {
+		if (eval_data.eval[0].eval_cells[r * 9 + c]["miss_recog"] == false) {
+			eval_data.eval[0].eval_cells[r * 9 + c]["miss_recog"] = true
+		} else {
+			eval_data.eval[0].eval_cells[r * 9 + c]["miss_recog"] = false
+		}
+	}
+
+    function cell_click(id) {
+			// console.log(id);
+			r = Math.floor(parseInt(id) / 10);
+			c = parseInt(id) % 10;
+			if (document.getElementById(id).style.backgroundColor == "pink") {
+				document.getElementById(id).style.backgroundColor = "green";
+				eval_data.eval[0].eval_cells[r * 9 + c]["color"] = "green";
+				eval_data.eval[0].eval_cells[r * 9 + c]["correct"] = true;
+				flip_miss_recog(r, c);
+				// cells[r*9+c]["miss_recog"] = false;
+			} else if (document.getElementById(id).style.backgroundColor == "green") {
+				document.getElementById(id).style.backgroundColor = "red";
+				eval_data.eval[0].eval_cells[r * 9 + c]["color"] = "red";
+				eval_data.eval[0].eval_cells[r * 9 + c]["correct"] = false;
+				flip_miss_recog(r, c);
+				// cells[r*9+c]["miss_recog"] = true;
+			} else if (document.getElementById(id).style.backgroundColor == "yellow") {
+				document.getElementById(id).style.backgroundColor = "red";
+				eval_data.eval[0].eval_cells[r * 9 + c]["correct"] = false;
+				eval_data.eval[0].eval_cells[r * 9 + c]["color"] = "red";
+			} else if (document.getElementById(id).style.backgroundColor == "red") {
+				document.getElementById(id).style.backgroundColor = "green";
+				eval_data.eval[0].eval_cells[r * 9 + c]["color"] = "green";
+				eval_data.eval[0].eval_cells[r * 9 + c]["correct"] = true;
+				flip_miss_recog(r, c);
+			} else {
+				document.getElementById(id).style.backgroundColor = "red";
+				eval_data.eval[0].eval_cells[r * 9 + c]["color"] = "red";
+				eval_data.eval[0].eval_cells[r * 9 + c]["correct"] = false;
         }
         number_of_mistakes();
     }
@@ -230,14 +239,14 @@
         var action = "End"
         // Display "End of Review"
         txt = txt + "<div id = \"stop_eval\" style=\"position: absolute; top: 80px; left: 200px; "
-         + "background-color: #003399; opacity: 1; width: 160px; height: 30px; " 
-         + "border: 2px solid blue; border-radius: 3px; z-index: 60; \" onclick=\"button_click" 
+         + "background-color: #17A2B8; opacity: 1; width: 160px; height: 30px; " 
+         + "border: 2px solid #17A2B8; border-radius: 3px; z-index: 60; \" onclick=\"button_click" 
          + "('" + action + "')\"><div id = \"button_txt\" style=\"text-align: center; color: white; " 
          + "opacity: 1; z-index: 70;\">End Review</div></div>"
          // Display "Number of Mistakes"
          txt = txt + "<div id = \"mis\" style=\"position: absolute; top: 80px; left: 500px; "
-         + "background-color: #003399; opacity: 1; width: 200px; height: 30px; " 
-         + "border: 2px solid blue; border-radius: 3px; z-index: 60; \">"
+         + "background-color: #17A2B8; opacity: 1; width: 200px; height: 30px; " 
+         + "border: 2px solid #17A2B8; border-radius: 3px; z-index: 60; \">"
          + "<div id = \"mistake\" style=\"text-align: center; color: white; " 
          + "opacity: 1; z-index: 70;\">Number of Mistakes: " + "<div id = \"m\" >" + m + "</div></div></div>"
         if (total > 1){
@@ -267,15 +276,22 @@
     function rendering_endpage(data){
         console.log("rendering endpage");
         txt3 = "<div id =\"end_page\" style=\"position: absolute; top: 0px; margin-top: 56px; padding: 30px; \">"
-                + "<div id =\"mis\">Number of Mistakes<ul>";
+                + "<div id =\"mis\">Number of mistake(s)<ul>";
         for (i in data.eval){
             txt3 = txt3 + "<li>" + data.eval[i]["image"] + ": " + data.eval[i]["mistakes"] + "</li>";
         } 
         action = "JSON"
-        txt3 = txt3 + "</ul></div><a href = \/home>Go to Home</a><br><div id = \"goback\" onclick=\"button_click('" + action + "')\">Return to Evaluation</div></div>";
+        //txt3 = txt3 + "</ul></div><a href = \/home>Go to Home</a><br><br><div id = \"goback\" onclick=\"button_click('" + action + "')\" style=\"color:blue\">Go back to scoring result review</div></div>";
+		txt3 = txt3 + "</ul></div><div onclick = \"redirect()\" class=\"text-info\">Go to Home</div><br>"
+			+ "<div id = \"goback\" onclick=\"button_click('" + action + "')\" class=\"text-info\">Go back to scoring result review</div>"
+			+ "<br><div><a href=\"https://forms.gle/inAvmFG9vyGx95Ev7\" class=\"text-info\">Feedback Form (Google Form)</a></div></div>";
         document.getElementById('area').innerHTML = txt3;
         return
     }
+
+	function redirect() {
+		window.location.assign("\/home")
+	}
 
     function button_click(action){
         // console.log("Cells: ",cells)
